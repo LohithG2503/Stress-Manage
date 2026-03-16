@@ -27,8 +27,15 @@ app.use(
 );
 app.use(express.json());
 
+const { seedData } = require("./seed");
+
+let seeded = false;
 app.use(async (req, res, next) => {
   await connectDB();
+  if (!seeded) {
+    await seedData();
+    seeded = true;
+  }
   next();
 });
 

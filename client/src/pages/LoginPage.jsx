@@ -106,21 +106,7 @@ export default function LoginPage() {
             </button>
           </form>
 
-          <div className="mt-8 pt-6 border-t border-white/10">
-            <p className="text-xs font-bold text-white/40 uppercase tracking-wider text-center mb-4">
-              Demo credentials
-            </p>
-            <div className="space-y-2 text-xs text-white/60 text-center font-medium">
-              <p>
-                Employee: <span className="text-brand-300">alice@company.com</span> /{" "}
-                <span className="text-brand-300">password123</span>
-              </p>
-              <p>
-                HR: <span className="text-brand-300">hr@company.com</span> /{" "}
-                <span className="text-brand-300">admin123</span>
-              </p>
-            </div>
-          </div>
+
         </div>
       </div>
     </div>

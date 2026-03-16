@@ -69,43 +69,55 @@ const generateMetrics = (employeeId, days) => {
   return metrics;
 };
 
-const seed = async () => {
+const seedData = async ({ dropExisting = false } = {}) => {
   try {
     await mongoose.connect(process.env.MONGO_URI);
     console.log("Connected to MongoDB");
 
-    await User.deleteMany({});
-    await Metric.deleteMany({});
-    console.log("Cleared existing data");
-
-    const createdUsers = await User.create(users);
-    console.log("Created " + createdUsers.length + " users");
-
-    const employees = createdUsers.filter((u) => u.role === "employee");
-    let totalMetrics = 0;
-
-    for (const employee of employees) {
-      const metricsData = generateMetrics(employee._id, 14);
-      for (const data of metricsData) {
-        await Metric.create(data);
-        totalMetrics++;
-      }
+    if (dropExisting) {
+      await User.deleteMany({});
+      await Metric.deleteMany({});
+      console.log("Cleared existing data");
     }
 
-    console.log("Created " + totalMetrics + " metric entries");
-    console.log("");
-    console.log("--- Login Credentials ---");
-    console.log("Employee: ullas@company.com / ullas123");
-    console.log("HR Admin: ullas@hr.com / hr@123");
-    console.log("-------------------------");
+    const existingUsers = await User.countDocuments();
+    if (existingUsers === 0) {
+      const createdUsers = await User.create(users);
+      console.log("Seeded " + createdUsers.length + " users");
 
-    await mongoose.connection.close();
-    console.log("Seed complete.");
-    process.exit(0);
+      const employees = createdUsers.filter((u) => u.role === "employee");
+      let totalMetrics = 0;
+
+      for (const employee of employees) {
+        const metricsData = generateMetrics(employee._id, 14);
+        for (const data of metricsData) {
+          await Metric.create(data);
+          totalMetrics++;
+        }
+      }
+
+      console.log("Seeded " + totalMetrics + " metric entries");
+      console.log("");
+      console.log("--- Login Credentials ---");
+      console.log("Employee: ullas@company.com / ullas123");
+      console.log("HR Admin: ullas@hr.com / hr@123");
+      console.log("-------------------------");
+    } else {
+      console.log("Seed skipped: existing users found (", existingUsers, ")");
+    }
   } catch (error) {
     console.error("Seed error:", error.message);
-    process.exit(1);
+    throw error;
   }
 };
 
-seed();
+if (require.main === module) {
+  seedData({ dropExisting: true })
+    .then(() => {
+      console.log("Seed complete.");
+      process.exit(0);
+    })
+    .catch(() => process.exit(1));
+}
+
+module.exports = { seedData };
