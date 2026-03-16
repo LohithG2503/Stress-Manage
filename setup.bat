@@ -37,25 +37,29 @@ if %ERRORLEVEL% neq 0 (
 echo Client dependencies installed.
 echo.
 
-cd ..
-
-echo [3/3] Checking .env file...
-if not exist .env (
-    copy .env.example .env >nul
-    echo Created .env from .env.example.
-    echo IMPORTANT: Open the .env file and update MONGO_URI with your MongoDB Atlas connection string.
-) else (
-    echo .env file already exists.
+echo [3/3] Seeding database...
+call npm run seed
+if %ERRORLEVEL% neq 0 (
+    echo ERROR: Failed to seed database.
+    pause
+    exit /b 1
 )
+echo Database seeded.
+echo.
+
+echo ============================================
+echo  Setup complete. Starting the application...
+echo ============================================
+echo.
+
+echo Starting server and client...
+start cmd /c "cd server && npm run dev"
+timeout /t 5 /nobreak >nul
+start cmd /c "cd client && npm run dev"
 
 echo.
-echo ============================================
-echo  Setup complete.
-echo ============================================
-echo.
-echo Next steps:
-echo   1. Update MONGO_URI in the .env file
-echo   2. Run: npm run seed    (load sample data)
-echo   3. Run: npm run dev     (start the application)
+echo Application is starting...
+echo Server: http://localhost:5000 (or check console)
+echo Client: http://localhost:5173 (or check console)
 echo.
 pause

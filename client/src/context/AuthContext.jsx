@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useState, useEffect } from "react";
 import api from "../services/api";
 
@@ -12,7 +13,7 @@ export function AuthProvider({ children }) {
     if (stored) {
       try {
         const parsed = JSON.parse(stored);
-        setUser(parsed);
+        setUser(parsed); // eslint-disable-line react-hooks/set-state-in-effect
         api.defaults.headers.common["Authorization"] =
           "Bearer " + parsed.token;
       } catch {
