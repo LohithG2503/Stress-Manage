@@ -2,7 +2,10 @@
   "name": "stress-manage-server",
   "version": "1.0.0",
   "description": "Employee Stress Management System - Backend API",
-  "main": "server.js",
+  "main": "index.js",
+  "engines": {
+    "node": "20"
+  },
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
@@ -13,6 +16,8 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.21.0",
+    "firebase-admin": "^13.7.0",
+    "firebase-functions": "^7.1.1",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.7.0"
   },

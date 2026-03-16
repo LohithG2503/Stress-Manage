@@ -1,2 +1,7 @@
 node_modules/
+dist/
 .env
+.env.production
+user_password.txt
+__fb_projects*.txt
+*.log
