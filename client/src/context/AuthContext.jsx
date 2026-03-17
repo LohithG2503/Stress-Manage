@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import api from "../services/api";
 
 const AuthContext = createContext(null);
@@ -7,6 +7,12 @@ const AuthContext = createContext(null);
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const clearAuthState = useCallback(() => {
+    setUser(null);
+    localStorage.removeItem("sm_user");
+    delete api.defaults.headers.common["Authorization"];
+  }, []);
 
   useEffect(() => {
     const stored = localStorage.getItem("sm_user");
@@ -23,6 +29,17 @@ export function AuthProvider({ children }) {
     setLoading(false);
   }, []);
 
+  useEffect(() => {
+    const handleUnauthorized = () => {
+      clearAuthState();
+    };
+
+    window.addEventListener("sm:unauthorized", handleUnauthorized);
+    return () => {
+      window.removeEventListener("sm:unauthorized", handleUnauthorized);
+    };
+  }, [clearAuthState]);
+
   const login = async (email, password) => {
     const res = await api.post("/auth/login", { email, password });
     const userData = res.data;
@@ -33,9 +50,7 @@ export function AuthProvider({ children }) {
   };
 
   const logout = () => {
-    setUser(null);
-    localStorage.removeItem("sm_user");
-    delete api.defaults.headers.common["Authorization"];
+    clearAuthState();
   };
 
   return (

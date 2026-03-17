@@ -15,12 +15,22 @@ const api = axios.create({
   },
 });
 
+let authFailureHandled = false;
+
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response && error.response.status === 401) {
-      localStorage.removeItem("sm_user");
-      window.location.href = "/login";
+    const requestUrl = error.config?.url || "";
+    const isLoginRequest = requestUrl.includes("/auth/login");
+
+    if (error.response && error.response.status === 401 && !isLoginRequest) {
+      if (!authFailureHandled) {
+        authFailureHandled = true;
+        window.dispatchEvent(new CustomEvent("sm:unauthorized"));
+        window.setTimeout(() => {
+          authFailureHandled = false;
+        }, 0);
+      }
     }
     return Promise.reject(error);
   }
