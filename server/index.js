@@ -5,10 +5,11 @@ const connectDB = require("./config/db");
 const authRoutes = require("./routes/auth");
 const metricsRoutes = require("./routes/metrics");
 
-
 dotenv.config();
 
 const app = express();
+const isVercel = process.env.VERCEL === "1";
+const shouldAutoSeed = !isVercel && process.env.AUTO_SEED !== "false";
 
 const allowedOrigins = (process.env.CLIENT_URL || "http://localhost:5173")
   .split(",")
@@ -32,26 +33,39 @@ const { seedData } = require("./seed");
 let seeded = false;
 let seedError = null;
 
-app.use(async (req, res, next) => {
-  await connectDB();
-  if (!seeded && !seedError) {
-    try {
-      await seedData();
-      seeded = true;
-    } catch (error) {
-      seedError = error;
-      console.error("Seed initialization failed:", error.message);
+app.get("/api/health", (req, res) => {
+  res.json({
+    status: "ok",
+    timestamp: new Date().toISOString(),
+    runtime: isVercel ? "vercel" : "node",
+    hasMongoUri: Boolean(process.env.MONGO_URI),
+    autoSeedEnabled: shouldAutoSeed,
+  });
+});
+
+app.use("/api", async (req, res, next) => {
+  try {
+    await connectDB();
+
+    if (shouldAutoSeed && !seeded && !seedError) {
+      try {
+        await seedData();
+        seeded = true;
+      } catch (error) {
+        seedError = error;
+        console.error("Seed initialization failed:", error.message);
+      }
     }
+
+    next();
+  } catch (error) {
+    console.error("Database initialization failed:", error.message);
+    res.status(503).json({ message: "Database connection failed" });
   }
-  next();
 });
 
 app.use("/api/auth", authRoutes);
 app.use("/api/metrics", metricsRoutes);
-
-app.get("/api/health", (req, res) => {
-  res.json({ status: "ok", timestamp: new Date().toISOString() });
-});
 
 app.use((err, req, res, _next) => {
   console.error("Unhandled error:", err.message);
