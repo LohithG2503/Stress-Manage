@@ -8,16 +8,44 @@ dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
 const users = [
   {
-    name: "Ullas Employee",
-    email: "ullas@company.com",
-    password: "ullas123",
+    name: "Alice Johnson",
+    email: "alice@company.com",
+    password: "password123",
     role: "employee",
     department: "Engineering",
   },
   {
-    name: "Ullas HR",
-    email: "ullas@hr.com",
-    password: "hr@123",
+    name: "Bob Williams",
+    email: "bob@company.com",
+    password: "password123",
+    role: "employee",
+    department: "Marketing",
+  },
+  {
+    name: "Carol Davis",
+    email: "carol@company.com",
+    password: "password123",
+    role: "employee",
+    department: "Design",
+  },
+  {
+    name: "David Miller",
+    email: "david@company.com",
+    password: "password123",
+    role: "employee",
+    department: "Sales",
+  },
+  {
+    name: "Eva Brown",
+    email: "eva@company.com",
+    password: "password123",
+    role: "employee",
+    department: "Finance",
+  },
+  {
+    name: "HR Admin",
+    email: "hr@company.com",
+    password: "admin123",
     role: "hr",
     department: "Human Resources",
   },
@@ -99,8 +127,8 @@ const seedData = async ({ dropExisting = false } = {}) => {
       console.log("Seeded " + totalMetrics + " metric entries");
       console.log("");
       console.log("--- Login Credentials ---");
-      console.log("Employee: ullas@company.com / ullas123");
-      console.log("HR Admin: ullas@hr.com / hr@123");
+      console.log("Employee: alice@company.com / password123");
+      console.log("HR Admin: hr@company.com / admin123");
       console.log("-------------------------");
     } else {
       console.log("Seed skipped: existing users found (", existingUsers, ")");

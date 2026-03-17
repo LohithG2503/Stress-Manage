@@ -8,6 +8,12 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const persistAuthState = useCallback((userData) => {
+    setUser(userData);
+    localStorage.setItem("sm_user", JSON.stringify(userData));
+    api.defaults.headers.common["Authorization"] = "Bearer " + userData.token;
+  }, []);
+
   const clearAuthState = useCallback(() => {
     setUser(null);
     localStorage.removeItem("sm_user");
@@ -43,9 +49,14 @@ export function AuthProvider({ children }) {
   const login = async (email, password) => {
     const res = await api.post("/auth/login", { email, password });
     const userData = res.data;
-    setUser(userData);
-    localStorage.setItem("sm_user", JSON.stringify(userData));
-    api.defaults.headers.common["Authorization"] = "Bearer " + userData.token;
+    persistAuthState(userData);
+    return userData;
+  };
+
+  const register = async (payload) => {
+    const res = await api.post("/auth/register", payload);
+    const userData = res.data;
+    persistAuthState(userData);
     return userData;
   };
 
@@ -54,7 +65,7 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );

@@ -5,11 +5,10 @@
   "outputDirectory": "client/dist",
   "routes": [
     {
-      "src": "/api/(.*)",
-      "dest": "/api"
+      "handle": "filesystem"
     },
     {
-      "src": "/[^.]+$",
+      "src": "/(.*)",
       "dest": "/index.html"
     }
   ]
