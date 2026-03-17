@@ -52,6 +52,10 @@ export default function LoginPage() {
             <p className="text-white/60 text-sm mt-2 font-medium">
               Employee Wellness Portal
             </p>
+            <p className="text-white/45 text-xs mt-3 leading-relaxed max-w-sm mx-auto">
+              Intelligent stress tracking for faster insights, clearer reporting,
+              and better workplace support.
+            </p>
           </div>
 
           {error && (
