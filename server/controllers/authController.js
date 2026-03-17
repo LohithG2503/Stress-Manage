@@ -65,8 +65,8 @@ const register = async (req, res) => {
     if (error.code === 11000) {
       return res.status(409).json({ message: "An account with this email already exists" });
     }
-    console.error("Register error:", error.message);
-    res.status(500).json({ message: "Server error" });
+    console.error("Register error:", error);
+    res.status(500).json({ message: error.message || "Server error" });
   }
 };
 
@@ -92,8 +92,8 @@ const login = async (req, res) => {
 
     res.json(buildAuthResponse(user));
   } catch (error) {
-    console.error("Login error:", error.message);
-    res.status(500).json({ message: "Server error" });
+    console.error("Login error:", error);
+    res.status(500).json({ message: error.message || "Server error" });
   }
 };
 
@@ -105,8 +105,8 @@ const getProfile = async (req, res) => {
     }
     res.json(user);
   } catch (error) {
-    console.error("Get profile error:", error.message);
-    res.status(500).json({ message: "Server error" });
+    console.error("Get profile error:", error);
+    res.status(500).json({ message: error.message || "Server error" });
   }
 };
 

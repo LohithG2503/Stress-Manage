@@ -33,14 +33,29 @@ const { seedData } = require("./seed");
 let seeded = false;
 let seedError = null;
 
-app.get("/api/health", (req, res) => {
-  res.json({
-    status: "ok",
-    timestamp: new Date().toISOString(),
-    runtime: isVercel ? "vercel" : "node",
-    hasMongoUri: Boolean(process.env.MONGO_URI),
-    autoSeedEnabled: shouldAutoSeed,
-  });
+app.get("/api/health", async (req, res) => {
+  try {
+    await connectDB();
+    res.json({
+      status: "ok",
+      timestamp: new Date().toISOString(),
+      runtime: isVercel ? "vercel" : "node",
+      hasMongoUri: Boolean(process.env.MONGO_URI),
+      autoSeedEnabled: shouldAutoSeed,
+      dbConnected: true,
+    });
+  } catch (error) {
+    console.error("Health check DB failure:", error.message);
+    res.status(503).json({
+      status: "degraded",
+      timestamp: new Date().toISOString(),
+      runtime: isVercel ? "vercel" : "node",
+      hasMongoUri: Boolean(process.env.MONGO_URI),
+      autoSeedEnabled: shouldAutoSeed,
+      dbConnected: false,
+      dbError: error.message,
+    });
+  }
 });
 
 app.use("/api", async (req, res, next) => {
@@ -60,7 +75,7 @@ app.use("/api", async (req, res, next) => {
     next();
   } catch (error) {
     console.error("Database initialization failed:", error.message);
-    res.status(503).json({ message: "Database connection failed" });
+    res.status(503).json({ message: "Database connection failed: " + error.message });
   }
 });
 
