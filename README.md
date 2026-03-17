@@ -43,9 +43,17 @@ Score is normalized to a 0-100 scale.
 ### Option 1: Using the setup script (Windows)
 
 1. Double-click `setup.bat`
-2. Open `.env` and replace `your_mongodb_atlas_connection_string_here` with your Atlas connection string
-3. Seed the database: `npm run seed`
-4. Start the app: `npm run dev`
+2. If `.env` does not exist yet, the script creates it from `.env.example` and asks you to update `MONGO_URI`
+3. Run `setup.bat` again after adding your MongoDB Atlas connection string
+
+What `setup.bat` does for you:
+- checks that Node.js and npm are installed
+- verifies Node.js is version 18 or later
+- can offer to install Node.js LTS automatically with `winget` if it is missing
+- installs server dependencies
+- installs client dependencies
+- seeds the database
+- starts the backend and frontend in separate terminal windows
 
 ### Option 2: Manual setup
 
