@@ -30,11 +30,18 @@ app.use(express.json());
 const { seedData } = require("./seed");
 
 let seeded = false;
+let seedError = null;
+
 app.use(async (req, res, next) => {
   await connectDB();
-  if (!seeded) {
-    await seedData();
-    seeded = true;
+  if (!seeded && !seedError) {
+    try {
+      await seedData();
+      seeded = true;
+    } catch (error) {
+      seedError = error;
+      console.error("Seed initialization failed:", error.message);
+    }
   }
   next();
 });
