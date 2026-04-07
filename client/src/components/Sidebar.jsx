@@ -12,8 +12,10 @@ export default function Sidebar() {
 
   const employeeLinks = [
     { to: "/employee/dashboard", label: "Dashboard" },
-    { to: "/employee/log", label: "Log Metrics" },
-    { to: "/employee/history", label: "My History" },
+    { to: "/employee/log", label: "Daily Check-In" },
+    { to: "/employee/assessment", label: "Stress Assessment" },
+    { to: "/employee/history", label: "Metric History" },
+    { to: "/employee/assessments", label: "Assessment History" },
   ];
 
   const hrLinks = [
@@ -24,11 +26,11 @@ export default function Sidebar() {
   const links = user?.role === "hr" ? hrLinks : employeeLinks;
 
   return (
-    <aside className="fixed inset-y-0 left-0 w-64 glass shadow-2xl z-50 flex flex-col justify-between border-r border-white/5">
+    <aside className="fixed inset-y-0 left-0 w-56 glass shadow-2xl z-50 flex flex-col justify-between border-r border-white/5">
       <div>
         <div className="p-6 border-b border-white/5">
-          <h1 className="text-2xl font-bold tracking-tight text-brand-400">
-            StressManage
+          <h1 className="text-2xl font-bold tracking-tight text-[#d4af37]">
+            ストレス
           </h1>
           <p className="text-sm text-white/60 mt-1 font-medium">
             Employee Wellness

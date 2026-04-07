@@ -44,6 +44,14 @@ export default function LogMetrics() {
       return;
     }
 
+    const totalTime = ["screenTime", "breakTime", "meetingTime", "afterHoursTime"]
+      .reduce((sum, field) => sum + parseFloat(form[field] || 0), 0);
+    
+    if (totalTime > 24) {
+      setError("Total logged hours cannot exceed 24 in a single day.");
+      return;
+    }
+
     setSubmitting(true);
 
     try {
@@ -98,10 +106,10 @@ export default function LogMetrics() {
         className="mb-8"
       >
         <h2 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-brand-300 to-white">
-          Log Daily Metrics
+          Daily Check-In
         </h2>
-        <p className="text-surface-400 text-sm mt-1 font-medium">
-          Record your daily work and wellness data
+        <p className="text-white/60 text-sm mt-1 font-medium">
+          Check in for the day and record your wellness data
         </p>
       </motion.div>
 
@@ -182,6 +190,7 @@ export default function LogMetrics() {
                 value={form.notes}
                 onChange={handleChange}
                 rows={3}
+                maxLength={500}
                 placeholder="Any additional notes about your day"
                 className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent text-white placeholder-white/30 transition-all resize-none"
               />

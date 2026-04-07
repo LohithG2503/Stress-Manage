@@ -4,6 +4,7 @@ const dotenv = require("dotenv");
 const connectDB = require("./config/db");
 const authRoutes = require("./routes/auth");
 const metricsRoutes = require("./routes/metrics");
+const assessmentRoutes = require("./routes/assessments");
 
 
 dotenv.config();
@@ -34,6 +35,7 @@ app.use(async (req, res, next) => {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/metrics", metricsRoutes);
+app.use("/api/assessments", assessmentRoutes);
 
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });

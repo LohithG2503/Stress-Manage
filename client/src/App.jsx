@@ -5,6 +5,9 @@ import LoginPage from "./pages/LoginPage";
 import EmployeeDashboard from "./pages/EmployeeDashboard";
 import LogMetrics from "./pages/LogMetrics";
 import EmployeeHistory from "./pages/EmployeeHistory";
+import StressAssessment from "./pages/StressAssessment";
+import AssessmentResults from "./pages/AssessmentResults";
+import EmployeeAssessments from "./pages/EmployeeAssessments";
 import HRDashboard from "./pages/HRDashboard";
 import HREmployees from "./pages/HREmployees";
 
@@ -36,6 +39,30 @@ export default function App() {
             element={
               <ProtectedRoute allowedRoles={["employee"]}>
                 <EmployeeHistory />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/employee/assessment"
+            element={
+              <ProtectedRoute allowedRoles={["employee"]}>
+                <StressAssessment />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/employee/assessment/results"
+            element={
+              <ProtectedRoute allowedRoles={["employee"]}>
+                <AssessmentResults />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/employee/assessments"
+            element={
+              <ProtectedRoute allowedRoles={["employee"]}>
+                <EmployeeAssessments />
               </ProtectedRoute>
             }
           />

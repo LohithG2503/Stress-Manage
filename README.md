@@ -1,4 +1,4 @@
-# StressManage - Employee Stress Management System
+# ストレス - Employee Stress Management System
 
 A full-stack web application for tracking and monitoring employee wellness metrics and stress indicators. Built with React, Node.js, Express, and MongoDB.
 

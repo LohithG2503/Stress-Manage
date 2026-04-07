@@ -48,7 +48,7 @@ export default function EmployeeHistory() {
         className="mb-8"
       >
         <h2 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-brand-300 to-white">My History</h2>
-        <p className="text-surface-400 text-sm mt-1 font-medium">
+        <p className="text-white/60 text-sm mt-1 font-medium">
           All your logged wellness entries
         </p>
       </motion.div>

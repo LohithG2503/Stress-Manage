@@ -18,12 +18,21 @@ import {
 
 const STRESS_COLORS = {
   Low: "#10b981",
-  Medium: "#f59e0b",
-  High: "#ef4444",
+  Medium: "#d4af37",
+  Moderate: "#d4af37",
+  High: "#991b1b",
 };
+
+const MATRIX_COLORS = [
+  "#10b981", // Optimal Functioning: Muted Jade Green (Low Risk)
+  "#d4af37", // Personal Vulnerability: Kintsugi Gold (Moderate Risk)
+  "#d4af37", // Environmental Stress: Kintsugi Gold (Moderate Risk)
+  "#991b1b", // Systemic Burnout: Deep Copper/Crimson (High Risk)
+];
 
 export default function HRDashboard() {
   const [stats, setStats] = useState(null);
+  const [assessmentStats, setAssessmentStats] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -32,8 +41,12 @@ export default function HRDashboard() {
 
   const fetchStats = async () => {
     try {
-      const res = await api.get("/metrics/stats");
-      setStats(res.data);
+      const [metricsRes, assessmentsRes] = await Promise.all([
+        api.get("/metrics/stats"),
+        api.get("/assessments/stats")
+      ]);
+      setStats(metricsRes.data);
+      setAssessmentStats(assessmentsRes.data);
     } catch (err) {
       console.error("Failed to fetch stats:", err.message);
     } finally {
@@ -44,30 +57,31 @@ export default function HRDashboard() {
   if (loading) {
     return (
       <DashboardLayout>
-        <p className="text-surface-500">Loading dashboard...</p>
+        <p className="text-white/60">Loading dashboard...</p>
       </DashboardLayout>
     );
   }
 
-  if (!stats) {
+  if (!stats || !assessmentStats) {
     return (
       <DashboardLayout>
-        <p className="text-surface-500">Failed to load dashboard data.</p>
+        <p className="text-white/60">Failed to load dashboard data.</p>
       </DashboardLayout>
     );
   }
 
   const overviewCards = [
     { label: "Total Employees", value: stats.totalEmployees },
-    { label: "Total Entries", value: stats.totalEntries },
-    {
-      label: "Avg Stress Score",
-      value: stats.averages.stressScore,
-    },
-    {
-      label: "Avg Screen Time",
-      value: stats.averages.screenTime + "h",
-    },
+    { label: "Total Log Entries", value: stats.totalEntries },
+    { label: "Avg Shift Stress", value: stats.averages.stressScore },
+    { label: "Avg Screen Time", value: stats.averages.screenTime + "h" },
+  ];
+
+  const assessmentOverviewCards = [
+    { label: "Total Assessments", value: assessmentStats.totalAssessments },
+    { label: "Avg Psych Stress", value: assessmentStats.avgScore },
+    { label: "High Risk Flags", value: assessmentStats.riskDistribution.High || 0 },
+    { label: "Optimal Profiles", value: assessmentStats.matrixDistribution["Optimal Functioning Matrix"] || 0 },
   ];
 
   const avgBarData = [
@@ -85,6 +99,20 @@ export default function HRDashboard() {
       value: count,
     }));
 
+  const assessmentPieData = Object.entries(assessmentStats.riskDistribution)
+    .filter(([, count]) => count > 0)
+    .map(([level, count]) => ({
+      name: level,
+      value: count,
+    }));
+
+  const matrixBarData = Object.entries(assessmentStats.matrixDistribution)
+    .filter(([, count]) => count > 0)
+    .map(([name, count]) => ({
+      name: name.replace(" Matrix", ""),
+      value: count,
+    }));
+
   return (
     <DashboardLayout>
       <motion.div 
@@ -93,12 +121,14 @@ export default function HRDashboard() {
         transition={{ duration: 0.5 }}
         className="mb-8"
       >
-        <h2 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-brand-300 to-white">HR Dashboard</h2>
-        <p className="text-surface-400 text-sm mt-1 font-medium">
+        <h2 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-brand-300 to-white">Workforce Analytics</h2>
+        <p className="text-white/60 text-sm mt-1 font-medium">
           Organization-wide wellness overview
         </p>
       </motion.div>
 
+      {/* Metrics Overview */}
+      <h3 className="text-lg font-bold text-white mb-4">Daily Work Metrics</h3>
       <motion.div 
         initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1, duration: 0.5 }}
         className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
@@ -109,7 +139,7 @@ export default function HRDashboard() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 + (idx * 0.1) }}
             key={card.label}
-            className="bg-white/5 border border-white/10 rounded-xl p-6 shadow-lg"
+            className="glass-card p-6"
           >
             <p className="text-xs font-bold text-white/50 uppercase tracking-wider mb-2">
               {card.label}
@@ -125,15 +155,15 @@ export default function HRDashboard() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
-        className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8"
+        className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12"
       >
-        <div className="bg-white/5 border border-white/10 rounded-xl p-6 shadow-lg">
+        <div className="glass-card p-6">
           <h3 className="text-sm font-bold text-white uppercase tracking-wider mb-6">
-            Average Metrics (Hours)
+            Average Working Metrics (Hours)
           </h3>
           <ResponsiveContainer width="100%" height={280}>
             <BarChart data={avgBarData} margin={{ top: 5, right: 20, bottom: 5, left: -20 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(212,175,55,0.05)" vertical={false} />
               <XAxis
                 dataKey="name"
                 tick={{ fontSize: 12, fill: "#94a3b8" }}
@@ -144,36 +174,33 @@ export default function HRDashboard() {
               <YAxis tick={{ fontSize: 12, fill: "#94a3b8" }} axisLine={false} tickLine={false} />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: "rgba(18, 18, 26, 0.9)",
+                  backgroundColor: "#1e1e1e",
                   borderRadius: "12px",
-                  border: "1px solid rgba(255,255,255,0.1)",
+                  border: "1px solid rgba(212,175,55,0.3)",
                   fontSize: "13px",
                   color: "#fff",
                 }}
-                cursor={{ fill: "rgba(255,255,255,0.05)" }}
+                itemStyle={{ color: "#e2e8f0" }}
+                cursor={{ fill: "rgba(212,175,55,0.05)" }}
               />
-              <Bar dataKey="value" fill="url(#colorStressBar)" radius={[4, 4, 0, 0]}>
-                {avgBarData.map((e, index) => (
-                  <Cell key={`cell-${index}`} fill="#818cf8" />
-                ))}
-              </Bar>
+              <Bar dataKey="value" fill="#d4af37" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
 
-        <div className="bg-white/5 border border-white/10 rounded-xl p-6 shadow-lg">
+        <div className="glass-card p-6">
           <h3 className="text-sm font-bold text-white uppercase tracking-wider mb-6">
-            Stress Level Distribution
+            Shift Log Stress Distribution
           </h3>
           {pieData.length > 0 ? (
             <ResponsiveContainer width="100%" height={280}>
-              <PieChart>
+              <PieChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
                 <Pie
                   data={pieData}
                   cx="50%"
                   cy="50%"
-                  innerRadius={65}
-                  outerRadius={105}
+                  innerRadius={55}
+                  outerRadius={85}
                   paddingAngle={5}
                   dataKey="value"
                   label={({ name, percent }) =>
@@ -190,62 +217,90 @@ export default function HRDashboard() {
                 </Pie>
                 <Tooltip 
                   contentStyle={{
-                    backgroundColor: "rgba(18, 18, 26, 0.9)",
+                    backgroundColor: "#1e1e1e",
                     borderRadius: "12px",
-                    border: "1px solid rgba(255,255,255,0.1)",
+                    border: "1px solid rgba(212,175,55,0.3)",
                     color: "#fff",
                   }}
+                  itemStyle={{ color: "#e2e8f0" }}
                 />
                 <Legend wrapperStyle={{ paddingTop: "20px" }} />
               </PieChart>
             </ResponsiveContainer>
           ) : (
-            <p className="text-surface-400 text-sm text-center py-20">
+            <p className="text-white/60 text-sm text-center py-20">
               No data available
             </p>
           )}
         </div>
       </motion.div>
 
+      {/* Psychological Overview */}
+      <h3 className="text-lg font-bold text-white mb-4">Psychological Assessments</h3>
+      <motion.div 
+        initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1, duration: 0.5 }}
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
+      >
+        {assessmentOverviewCards.map((card, idx) => (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 + (idx * 0.1) }}
+            key={card.label}
+            className="glass-card border-b-4 border-b-[#d4af37] p-6"
+          >
+            <p className="text-xs font-bold text-white/50 uppercase tracking-wider mb-2">
+              {card.label}
+            </p>
+            <p className="text-3xl font-extrabold text-white">
+              {card.value}
+            </p>
+          </motion.div>
+        ))}
+      </motion.div>
+
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4 }}
-        className="bg-white/5 border border-white/10 rounded-xl overflow-hidden shadow-lg mb-8"
+        transition={{ delay: 0.3 }}
+        className="grid grid-cols-1 mb-8"
       >
-        <div className="px-6 py-5 border-b border-white/10">
-          <h3 className="text-sm font-bold text-white uppercase tracking-wider">
-            Detailed Averages
+        <div className="glass-card kintsugi-glow p-6">
+          <h3 className="text-sm font-bold text-white uppercase tracking-wider mb-6">
+            Psychological Matrix Profiles
           </h3>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="text-left text-xs font-bold text-white/50 uppercase tracking-widest border-b border-white/10 bg-black/20">
-                <th className="px-6 py-4">Metric</th>
-                <th className="px-6 py-4">Average Value</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-white/5">
-              {[
-                ["Screen Time", stats.averages.screenTime + " hours"],
-                ["Break Time", stats.averages.breakTime + " hours"],
-                ["Meeting Time", stats.averages.meetingTime + " hours"],
-                ["Work Time", stats.averages.workTime + " hours"],
-                ["After-Hours Work", stats.averages.afterHoursTime + " hours"],
-                ["Stress Score", stats.averages.stressScore + " / 100"],
-              ].map(([label, val]) => (
-                <tr key={label} className="hover:bg-white/5 transition-colors">
-                  <td className="px-6 py-4 font-semibold text-white/80">
-                    {label}
-                  </td>
-                  <td className="px-6 py-4 text-brand-300 font-bold">{val}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          {matrixBarData.length > 0 ? (
+            <ResponsiveContainer width="100%" height={280}>
+              <BarChart data={matrixBarData} layout="vertical" margin={{ top: 5, right: 20, bottom: 5, left: 10 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(212,175,55,0.05)" horizontal={false} />
+                <XAxis type="number" tick={{ fontSize: 12, fill: "#94a3b8" }} axisLine={false} tickLine={false} />
+                <YAxis dataKey="name" type="category" tick={{ fontSize: 10, fill: "#94a3b8" }} axisLine={false} tickLine={false} width={100} />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: "#1e1e1e",
+                    borderRadius: "12px",
+                    border: "1px solid rgba(212,175,55,0.3)",
+                    fontSize: "13px",
+                    color: "#fff",
+                  }}
+                  itemStyle={{ color: "#e2e8f0" }}
+                  cursor={{ fill: "rgba(212,175,55,0.05)" }}
+                />
+                <Bar dataKey="value" radius={[0, 4, 4, 0]}>
+                  {matrixBarData.map((e, index) => (
+                    <Cell key={`cell-${index}`} fill={MATRIX_COLORS[index % MATRIX_COLORS.length]} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          ) : (
+             <p className="text-white/60 text-sm text-center py-20">
+              No matrices available
+            </p>
+          )}
         </div>
       </motion.div>
+
     </DashboardLayout>
   );
 }
