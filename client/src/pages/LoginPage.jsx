@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import KintsugiDust from "../components/animations/KintsugiDust";
 import BlurText from "../components/BlurText";
@@ -145,6 +145,13 @@ export default function LoginPage() {
                 {submitting ? "Authenticating..." : "Sign In"}
               </button>
             </form>
+
+            <p className="mt-6 text-center text-sm text-white/60">
+              Need an account?{" "}
+              <Link to="/signup" className="text-brand-primary hover:text-white font-semibold">
+                Create one
+              </Link>
+            </p>
           </div>
         </div>
       </div>

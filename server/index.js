@@ -6,10 +6,11 @@ const authRoutes = require("./routes/auth");
 const metricsRoutes = require("./routes/metrics");
 const assessmentRoutes = require("./routes/assessments");
 
-
 dotenv.config();
 
 const app = express();
+const isVercel = process.env.VERCEL === "1";
+const shouldAutoSeed = !isVercel && process.env.AUTO_SEED !== "false";
 
 const allowedOrigins = (process.env.CLIENT_URL || "http://localhost:5173")
   .split(",")
@@ -28,18 +29,60 @@ app.use(
 );
 app.use(express.json());
 
-app.use(async (req, res, next) => {
-  await connectDB();
-  next();
+const { seedData } = require("./seed");
+
+let seeded = false;
+let seedError = null;
+
+app.get("/api/health", async (req, res) => {
+  try {
+    await connectDB();
+    res.json({
+      status: "ok",
+      timestamp: new Date().toISOString(),
+      runtime: isVercel ? "vercel" : "node",
+      hasMongoUri: Boolean(process.env.MONGO_URI),
+      autoSeedEnabled: shouldAutoSeed,
+      dbConnected: true,
+    });
+  } catch (error) {
+    console.error("Health check DB failure:", error.message);
+    res.status(503).json({
+      status: "degraded",
+      timestamp: new Date().toISOString(),
+      runtime: isVercel ? "vercel" : "node",
+      hasMongoUri: Boolean(process.env.MONGO_URI),
+      autoSeedEnabled: shouldAutoSeed,
+      dbConnected: false,
+      dbError: error.message,
+    });
+  }
+});
+
+app.use("/api", async (req, res, next) => {
+  try {
+    await connectDB();
+
+    if (shouldAutoSeed && !seeded && !seedError) {
+      try {
+        await seedData();
+        seeded = true;
+      } catch (error) {
+        seedError = error;
+        console.error("Seed initialization failed:", error.message);
+      }
+    }
+
+    next();
+  } catch (error) {
+    console.error("Database initialization failed:", error.message);
+    res.status(503).json({ message: "Database connection failed: " + error.message });
+  }
 });
 
 app.use("/api/auth", authRoutes);
 app.use("/api/metrics", metricsRoutes);
 app.use("/api/assessments", assessmentRoutes);
-
-app.get("/api/health", (req, res) => {
-  res.json({ status: "ok", timestamp: new Date().toISOString() });
-});
 
 app.use((err, req, res, _next) => {
   console.error("Unhandled error:", err.message);

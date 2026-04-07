@@ -1,8 +1,17 @@
 # ストレス - Employee Stress Management System
 
-A full-stack web application for tracking and monitoring employee wellness metrics and stress indicators. Built with React, Node.js, Express, and MongoDB.
+StressManage is a workplace wellness platform focused on moving beyond delayed manual surveys and static reporting toward intelligent stress tracking. The long-term idea is to unify employee wellness inputs, work patterns, HR insights, and future integrations such as wearables and communication signals into one 360-degree view that supports faster detection, clearer reporting, and timely intervention.
+
+Built with React, Node.js, Express, and MongoDB.
 
 ## Features
+
+### Project Vision
+- Replace delayed survey-only monitoring with intelligent stress tracking
+- Bring employee wellness, work data, and HR visibility into one connected system
+- Support a 360-degree view of stress patterns instead of isolated reports
+- Enable faster alerts and earlier action through smarter monitoring
+- Keep the current platform practical now, with deeper AI-driven analysis planned later
 
 ### Employee Portal
 - Log daily metrics: screen time, break time, meeting time, work time, afterHoursWork time
@@ -43,9 +52,17 @@ Score is normalized to a 0-100 scale.
 ### Option 1: Using the setup script (Windows)
 
 1. Double-click `setup.bat`
-2. Open `.env` and replace `your_mongodb_atlas_connection_string_here` with your Atlas connection string
-3. Seed the database: `npm run seed`
-4. Start the app: `npm run dev`
+2. If `.env` does not exist yet, the script creates it from `.env.example` and asks you to update `MONGO_URI`
+3. Run `setup.bat` again after adding your MongoDB Atlas connection string
+
+What `setup.bat` does for you:
+- checks that Node.js and npm are installed
+- verifies Node.js is version 18 or later
+- can offer to install Node.js LTS automatically with `winget` if it is missing
+- installs server dependencies
+- installs client dependencies
+- seeds the database
+- starts the backend and frontend in separate terminal windows
 
 ### Option 2: Manual setup
 
