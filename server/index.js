@@ -80,6 +80,16 @@ app.use("/api", async (req, res, next) => {
   }
 });
 
+const rateLimit = require("express-rate-limit");
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per windowMs
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { message: "Too many requests from this IP, please try again after 15 minutes" }
+});
+app.use("/api/", apiLimiter);
+
 app.use("/api/auth", authRoutes);
 app.use("/api/metrics", metricsRoutes);
 app.use("/api/assessments", assessmentRoutes);
