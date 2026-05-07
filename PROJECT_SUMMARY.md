@@ -1,6 +1,6 @@
-# ストレス System Architecture & Summary
+# BurnoutX-AI System Architecture & Summary
 
-**ストレス** is a comprehensive, hybrid employee wellness and analytics platform engineered specifically to track, assess, and intuitively map both **daily work metrics** and **psychological stress vulnerabilities**.
+**BurnoutX-AI** is a comprehensive, hybrid employee wellness and analytics platform engineered specifically to track, assess, and intuitively map both **daily work metrics** and **psychological stress vulnerabilities**.
 
 The application enforces strict Role-Based Access Control (RBAC), segregating internal logic exclusively into two distinct domains: **Employees** and **HR Administrators**.
 
@@ -27,7 +27,7 @@ The application enforces strict Role-Based Access Control (RBAC), segregating in
 
 ## Theming & Global CSS Styles
 
-The user interface of ストレス is built on a highly polished, unified design system heavily leveraging modern dark-mode paradigms, custom Tailwind extensions, and foundational CSS properties.
+The user interface of BurnoutX-AI is built on a highly polished, unified design system heavily leveraging modern dark-mode paradigms, custom Tailwind extensions, and foundational CSS properties.
 
 1. **Design Paradigm (Glassmorphism & Gradients)**
    - The application relies on frosted-glass paneled modals overlayed on deep, dark-mode gradient backgrounds.

@@ -10,7 +10,7 @@ set "ENV_FILE=%ROOT_DIR%\.env"
 set "ENV_EXAMPLE=%ROOT_DIR%\.env.example"
 
 echo ============================================
-echo  StressManage - Setup Script
+echo  BurnoutX-AI - Setup Script
 echo ============================================
 echo.
 
@@ -140,9 +140,9 @@ echo Database seeded.
 echo.
 
 echo [4/4] Starting the application...
-start "StressManage Server" cmd /k "cd /d ""%SERVER_DIR%"" && npm run dev"
+start "BurnoutX-AI Server" cmd /k "cd /d ""%SERVER_DIR%"" && npm run dev"
 timeout /t 5 /nobreak >nul
-start "StressManage Client" cmd /k "cd /d ""%CLIENT_DIR%"" && npm run dev"
+start "BurnoutX-AI Client" cmd /k "cd /d ""%CLIENT_DIR%"" && npm run dev"
 
 echo.
 echo ============================================
