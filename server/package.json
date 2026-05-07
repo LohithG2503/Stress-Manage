@@ -1,7 +1,7 @@
 {
-  "name": "stress-manage-server",
+  "name": "burnoutx-ai-server",
   "version": "1.0.0",
-  "description": "Employee Stress Management System - Backend API",
+  "description": "BurnoutX-AI - AI-Powered Burnout Management System - Backend API",
   "main": "index.js",
   "engines": {
     "node": "20"

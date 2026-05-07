@@ -30,10 +30,10 @@ export default function Sidebar() {
       <div>
         <div className="p-6 border-b border-white/5">
           <h1 className="text-2xl font-bold tracking-tight text-[#d4af37]">
-            ストレス
+            BurnoutX-AI
           </h1>
           <p className="text-sm text-white/60 mt-1 font-medium">
-            Employee Wellness
+            AI-Powered Burnout Management
           </p>
         </div>
 

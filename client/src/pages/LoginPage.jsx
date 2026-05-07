@@ -49,13 +49,13 @@ export default function LoginPage() {
         
         <div className="relative z-10 max-w-lg text-center">
           <h1 className="text-6xl md:text-7xl font-extrabold tracking-widest text-brand-primary mb-2">
-            ストレス
+            BurnoutX-AI
           </h1>
           <div className="text-[10px] text-brand-primary/60 tracking-[0.5em] uppercase mb-8">
-            SUTORESU | STRESS
+            BurnoutX-AI | AI-Powered Burnout Management
           </div>
           <h2 className="text-lg md:text-xl font-medium text-gray-300 tracking-[0.2em] uppercase mb-6">
-            Employee Wellness Portal
+            AI-Powered Burnout Management Portal
           </h2>
           <BlurText 
             text="In the Japanese art of Kintsugi, broken pottery is repaired with gold, making it stronger and more beautiful than before. This portal is designed to identify corporate burnout, map psychological matrices, and provide the golden seams of support needed for optimal functioning."
@@ -74,13 +74,13 @@ export default function LoginPage() {
             {/* Mobile Title */}
             <div className="text-center mb-8 lg:hidden">
               <h1 className="text-4xl font-extrabold tracking-widest text-brand-primary mb-1">
-                ストレス
+                BurnoutX-AI
               </h1>
               <div className="text-[9px] text-brand-primary/60 tracking-[0.5em] uppercase mb-4">
-                SUTORESU | STRESS
+                BurnoutX-AI | AI-Powered Burnout Management
               </div>
               <p className="text-gray-300 text-xs font-medium uppercase tracking-[0.2em]">
-                Employee Wellness Portal
+                AI-Powered Burnout Management Portal
               </p>
             </div>
 

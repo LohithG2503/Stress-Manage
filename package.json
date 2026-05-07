@@ -1,7 +1,7 @@
 {
-  "name": "stress-manage",
+  "name": "burnoutx-ai",
   "version": "1.0.0",
-  "description": "Employee Stress Management System - Full Stack MERN Application",
+  "description": "BurnoutX-AI - AI-Powered Burnout Management System - Full Stack MERN Application",
   "private": true,
   "scripts": {
     "install:all": "cd server && npm install && cd ../client && npm install",

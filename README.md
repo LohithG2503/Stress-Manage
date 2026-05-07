@@ -1,6 +1,6 @@
-# ストレス - Employee Stress Management System
+# BurnoutX-AI - AI-Powered Burnout Management System
 
-StressManage is a workplace wellness platform focused on moving beyond delayed manual surveys and static reporting toward intelligent stress tracking. The long-term idea is to unify employee wellness inputs, work patterns, HR insights, and future integrations such as wearables and communication signals into one 360-degree view that supports faster detection, clearer reporting, and timely intervention.
+BurnoutX-AI is a workplace wellness platform focused on moving beyond delayed manual surveys and static reporting toward intelligent stress tracking. The long-term idea is to unify employee wellness inputs, work patterns, HR insights, and future integrations such as wearables and communication signals into one 360-degree view that supports faster detection, clearer reporting, and timely intervention.
 
 Built with React, Node.js, Express, and MongoDB.
 
